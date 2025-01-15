@@ -4,8 +4,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const connectDB = require("./connection/db");
 const cryptoRoutes = require("./routes/cryptoRoutes");
-
 const alertRoutes = require("./routes/alertRoutes");
+const { checkAlerts } = require('./services/alertService');
 require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +20,7 @@ connectDB();
 //Routes
 app.use("/api/crypto", cryptoRoutes);
 app.use("/api/alerts", alertRoutes);
+setInterval(checkAlerts, 60000);
 
 // Start the server
 app.listen(PORT, () => {
