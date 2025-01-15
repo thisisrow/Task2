@@ -1,54 +1,45 @@
 import React, { useState, useEffect } from "react";
-
+import axios from "axios";
 const Hero = () => {
-  const [name, setName] = useState("");
-  const [currency, setCurrency] = useState("usd");
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-
-  // Fetch data from the API based on the selected currency
-  useEffect(() => {
-    const fetchData = async () => {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          "x-cg-demo-api-key": "CG-u9mxa7K1n45Usrs4mTjdrQkA",
-        },
+    const [name, setName] = useState("");
+    const [currency, setCurrency] = useState("usd");
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+  
+    // Fetch data from the backend API
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/crypto/markets`, {
+            params: { currency },
+          });
+          setData(response.data);
+          setFilteredData(response.data); // Initialize filtered data
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       };
-
-      try {
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}`,
-          options
-        );
-        const result = await response.json();
-        setData(result);
-        setFilteredData(result); // Initialize filtered data
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+  
+      fetchData();
+    }, [currency]);
+  
+    // Handle search input change to filter data locally
+    const handleSearch = (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      setName(searchTerm);
+  
+      const filtered = data.filter((coin) =>
+        coin.name.toLowerCase().includes(searchTerm) ||
+        coin.symbol.toLowerCase().includes(searchTerm)
+      );
+  
+      setFilteredData(filtered);
     };
-
-    fetchData();
-  }, [currency]);
-
-  // Handle search input change to filter data locally
-  const handleSearch = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setName(searchTerm);
-
-    const filtered = data.filter((coin) =>
-      coin.name.toLowerCase().includes(searchTerm) ||
-      coin.symbol.toLowerCase().includes(searchTerm)
-    );
-
-    setFilteredData(filtered);
-  };
+  
 
   return (
     <>
-      <div className="container-fluid">
+      <div className="container-fluid" >
         <h1 className="text-center">Crypto Search</h1>
         <div className="row d-flex justify-content-center mt-5">
           <div className="col-5">
@@ -80,7 +71,7 @@ const Hero = () => {
             <table className="table table-light table-hover">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">Rank</th>
                   <th scope="col">Coin</th>
                   <th scope="col">Price</th>
                   <th scope="col">24H Change</th>

@@ -1,8 +1,8 @@
-// utils/cache.js
 const cache = new Map();
 
 exports.setCache = (key, value, ttl) => {
-  cache.set(key, { value, expiry: Date.now() + ttl });
+  const expiry = Date.now() + ttl;
+  cache.set(key, { value, expiry });
 };
 
 exports.getCache = (key) => {

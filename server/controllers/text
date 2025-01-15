@@ -1,6 +1,4 @@
 const Alert = require('../models/alertModel');
-const { fetchCryptoPrice } = require('../services/priceService');
-
 exports.createAlert = async (req, res) => {
   try {
     const { userEmail, cryptoSymbol, targetPrice, isAbove } = req.body;
@@ -15,15 +13,6 @@ exports.getAlerts = async (req, res) => {
   try {
     const alerts = await Alert.find();
     res.status(200).json(alerts);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-exports.getCryptoPrice = async (req, res) => {
-  try {
-    const price = await fetchCryptoPrice(req.params.cryptoId);
-    res.status(200).json({ crypto: req.params.cryptoId, price });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
