@@ -31,14 +31,21 @@ const Alerts = ({ alerts, fetchAlerts }) => {
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <span>
-                {alert.cryptoSymbol} {alert.condition} {alert.targetPrice}
+                {alert.cryptoSymbol} {alert.condition} {alert.targetPrice} 
               </span>
-              <button
+              <span>
+              <span className={`badge text-bg-${alert.isTriggered ? 'primary' : 'danger'} mx-2`}>
+  {JSON.stringify(alert.isTriggered)}
+</span>
+
+             <button
                 className="btn btn-danger btn-sm"
                 onClick={() => handleDelete(alert._id)}
               >
                 Delete
               </button>
+              </span>
+              
             </li>
           ))}
         </ul>

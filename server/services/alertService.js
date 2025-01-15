@@ -1,6 +1,19 @@
+// controller to check alerts and send email notifications
+
+const dotenv = require("dotenv");
+dotenv.config();
 const Alert = require("../models/alertModel");
+const nodemailer = require('nodemailer');
 const { fetchCryptoMarkets } = require("../services/cryptoService");
 const { getCache, setCache } = require("../utils/cache"); // Import cache functions
+
+const transporter = nodemailer.createTransport({
+  service: process.env.EMAIL_SERVICE,  
+  auth: {
+      user: process.env.EMAIL_USER,  
+      pass: process.env.EMAIL_PASSWORD    
+  }
+});
 
 // This function will check each alert condition
 const checkAlerts = async () => {
@@ -40,10 +53,21 @@ const checkAlerts = async () => {
         // Trigger the alert if the condition is met
         alert.isTriggered = true;
         await alert.save(); // Save the alert as triggered
-
-        // Log the alert (replace with email or other notification later)
-        console.log(`Alert triggered for ${alert.cryptoSymbol} (${alert.currency.toUpperCase()}): ` +
-                    `Price is now ${crypto.current_price}, condition ${alert.condition} ${alert.targetPrice}`);
+        // Send an email notification to the user
+        const mailOptions = {
+          from: process.env.EMAIL_USER,  
+          to: alert.userEmail, 
+          subject: 'Alert Message for Crypto prices matching', 
+          text: `Alert triggered for ${alert.cryptoSymbol} (${alert.currency.toUpperCase()}): ` +
+                    `Price is now ${crypto.current_price}, condition ${alert.condition} ${alert.targetPrice}`
+        };
+        
+        // Send an email notification
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return console.error('Error sending email:', error);
+          }
+        });
       }
     }
   } catch (error) {
