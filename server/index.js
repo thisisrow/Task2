@@ -21,6 +21,10 @@ connectDB();
 app.use("/api/crypto", cryptoRoutes);
 app.use("/api/alerts", alertRoutes);
 setInterval(checkAlerts, 60000);
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to the API!');
+});
+
 
 // Start the server
 app.listen(PORT, () => {
