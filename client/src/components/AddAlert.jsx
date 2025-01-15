@@ -5,12 +5,12 @@ const AddAlert = ({ fetchAlerts }) => {
   const [cryptoSymbol, setCryptoSymbol] = useState("");
   const [targetPrice, setTargetPrice] = useState("");
   const [condition, setCondition] = useState("above");
-
+  const [userEmail,setUserEmail]=useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/api/alerts", {
-        userEmail: "prathamesh.223414101@vcet.edu.in", // Replace with dynamic user email
+        userEmail,
         cryptoSymbol,
         targetPrice,
         condition,
@@ -43,6 +43,17 @@ const AddAlert = ({ fetchAlerts }) => {
           placeholder="Enter target price"
           value={targetPrice}
           onChange={(e) => setTargetPrice(e.target.value)}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="userEmail">User Email</label>
+        <input
+          type="email"
+          className="form-control"
+          id="userEmail"
+          placeholder="Enter your email"
+          value={userEmail}
+          onChange={(e) => setUserEmail(e.target.value)}
         />
       </div>
       <div className="form-group">
