@@ -1,3 +1,4 @@
+const Alert = require("../models/alertModel");
 const { fetchCryptoMarkets } = require("../services/cryptoService");
 
 exports.getCryptoData = async (req, res) => {
